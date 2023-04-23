@@ -5,27 +5,29 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Baloo+Tamma+2:600, 700">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/earlyaccess/notosanstc.css">
     <link rel="stylesheet" href="index.css" type="text/css">
 </head>
 <body>
     <div class="container">
         <h1>TODO LIST</h1>
         <div class="card input">
-          <input type="text" placeholder="請輸入待辦事項" />
-          <a href="#" class="btn_add" onclick="addItem()">+</a>
+          <input type="text" placeholder="請輸入待辦事項" required/>
+          <button class="btn_add" onclick="addItem()">+</button>
         </div>
         <div class="card card_list">
           <ul class="tab">
-            <li class="tab-item active" data-todo="all">全部</li>
-            <li class="tab-item" data-todo="noCompelete">待完成</li>
-            <li class="tab-item" data-todo="isCompelete">已完成</li>
+            <li class="tab_item active" data-todo="all">全部</li>
+            <li class="tab_item" data-todo="notDone">待完成</li>
+            <li class="tab_item" data-todo="isDone">已完成</li>
           </ul>
           <div class="cart_content">
             <ul class="list">
             </ul>
             <div class="list_footer">
               <p>0 個待完成項目</p>
-              <a href="#">清除已完成項目</a>
+              <button class="clear" disabled>清除已完成項目</button>
             </div>
           </div>
         </div>

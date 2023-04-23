@@ -6,15 +6,21 @@ let filterList = [];
 // 用於刪除已完成的代辦事項
 const itemNum = document.querySelector('.list_footer');
 itemNum.addEventListener('click', function(e){
-    if(e.target.nodeName === 'A'){
-        list = list.filter(item => item.checked !== true);
+    if(e.target.nodeName === 'BUTTON'){
+        list = list.filter(item => item.isChecked !== true);
+    }
+    if(!tabArray[0].classList.contains("active")){
+        tabArray.forEach((item) => {
+            item.classList.remove('active');
+        })
+        tabArray[0].classList.add('active');
     }
     refreshList();
 })
 
 // 用於代辦事項的過濾
 const tabGroup = document.querySelector('.tab');
-const tabArray = document.querySelectorAll('.tab-item');
+const tabArray = document.querySelectorAll('.tab_item');
 tabGroup.addEventListener('click', function(e){
     tabArray.forEach((item) => {
         item.classList.remove('active');
@@ -24,28 +30,30 @@ tabGroup.addEventListener('click', function(e){
     refreshList(e.target.getAttribute('data-todo'));
 })
 
-// 用於更改事項的勾選狀態
-const listSelector = document.querySelector('.list');
-listSelector.addEventListener('change', function(e){
-    if(e.target.nodeName = 'INPUT'){
-        isCompeleteItem()
+
+// 點擊空白輸入事項
+document.body.onkeyup = function(e){
+    if(e.key == "Enter" || e.code == "Enter" || e.keyCode == 13) {
+        addItem();
     }
-})
+}
 
 // 新增代辦事項
 function addItem(){
     const input = document.querySelector('input');
     if(input.value === ''){
-        alert('請輸入代辦事項');
+        alert("請輸入代辦事項。")
         return;
     }
-    const item = {};
-    item.checked = false;
-    item.id = guidGenerator();
-    item.name = input.value;
+    const item = {
+        isChecked: false,
+        id: guidGenerator(),
+        name: input.value,
+    };
+
     list.push(item);
     input.value = '';
-    refreshList('all');
+    refreshList();
 }
 // 刪除代辦事項
 function delItem(id){
@@ -56,11 +64,11 @@ function delItem(id){
 // 呈現表單資料
 function refreshList(tab){
     switch (tab) {
-        case "noCompelete":
-            filterList = list.filter((item) => item.checked !== true);
+        case "notDone":
+            filterList = list.filter((item) => item.isChecked !== true);
             break;
-        case "isCompelete":
-            filterList = list.filter((item) => item.checked !== false);
+        case "isDone":
+            filterList = list.filter((item) => item.isChecked !== false);
             break;
         default:
             filterList = list;
@@ -68,14 +76,14 @@ function refreshList(tab){
     }
 
     let str = '';
-    console.log(filterList);
+    const listSelector = document.querySelector('.list');
     filterList.forEach((item) => {
         let checkStr = '';
-        if(item.checked){
-            checkStr = `<input type="checkbox" data-id='${item.id}' checked/>`
+        if(item.isChecked){
+            checkStr = `<input type="checkbox" data-id='${item.id}' onclick="changeItemState(this)" checked/>`
         }
         else{
-            checkStr = `<input type="checkbox" data-id='${item.id}'/>`
+            checkStr = `<input type="checkbox" data-id='${item.id}' onclick="changeItemState(this)"/>`
         }
         str = str.concat(`<li>
         <label class="checkbox" for="">
@@ -86,24 +94,35 @@ function refreshList(tab){
         </li>`)
     })
     listSelector.innerHTML = str;
-    totalNoCompleteItem();
+    NotDoneItem();
 }
 // 更改事項勾選狀態
-function isCompeleteItem() {
-    const isCheckItem = document.querySelectorAll('input[type="checkbox"]:checked')
-    isCheckItem.forEach((checked) => {
-        list.forEach((item) => {
-            if(item.id === checked.getAttribute('data-id')){
-                item.checked = true;
+function changeItemState(changeItem) {
+    list.map((item) => {
+        if(item.id === changeItem.getAttribute("data-id")){
+            if(changeItem.checked){
+                item.isChecked = true;
             }
-        })
+            else{
+                item.isChecked = false;
+            }
+        }
     })
-    totalNoCompleteItem();
+    NotDoneItem();
 }
 // 目前未完成事項總數
-function totalNoCompleteItem(){
-    const totalNum = document.querySelector('.list_footer p')
-    totalNum.textContent = `${list.filter(item => item.checked !== true).length} 個待完成項目`;
+function NotDoneItem(){
+    const totalNotDoneSeletor = document.querySelector('.list_footer p');
+    const clearBtn = document.querySelector('.clear');
+    const totalNotDoneItem = list.filter(item => item.isChecked !== true).length;
+    totalNotDoneSeletor.textContent = `${totalNotDoneItem} 個待完成項目`;
+
+    if(totalNotDoneItem === list.length){
+        clearBtn.disabled = true;
+    }
+    else{
+        clearBtn.disabled = false;
+    }
 }
 // 額外參考：事項的ID產生方法
 function guidGenerator() {
