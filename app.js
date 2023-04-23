@@ -4,8 +4,8 @@ let list = [];
 let filterList = [];
 
 // 用於刪除已完成的代辦事項
-const itemNum = document.querySelector('.list_footer');
-itemNum.addEventListener('click', function(e){
+const clearBtnSeletor = document.querySelector('.list_footer');
+clearBtnSeletor.addEventListener('click', function(e){
     if(e.target.nodeName === 'BUTTON'){
         list = list.filter(item => item.isChecked !== true);
     }
