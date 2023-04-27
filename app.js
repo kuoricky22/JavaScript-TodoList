@@ -2,6 +2,8 @@
 let list = [];
 // 紀錄過濾後的代辦事項
 let filterList = [];
+// 紀錄目前tab
+let currentTab = '';
 
 // 用於刪除已完成的代辦事項
 const clearBtnSeletor = document.querySelector('.list_footer');
@@ -63,7 +65,10 @@ function delItem(id){
 
 // 呈現表單資料
 function refreshList(tab){
-    switch (tab) {
+    if(currentTab !== tab && tab !== undefined){
+        currentTab = tab;
+    }
+    switch (currentTab) {
         case "notDone":
             filterList = list.filter((item) => item.isChecked !== true);
             break;
